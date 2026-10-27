@@ -534,6 +534,7 @@ async function claimEditLink(): Promise<EventKey | null> {
 }
 
 async function start() {
+  console.log(`laskesisse build ${__BUILD_TIME__}${__BUILD_COMMIT__ ? ` (${__BUILD_COMMIT__})` : ""}`);
   buildRuleToggles();
 
   for (const tab of document.querySelectorAll<HTMLButtonElement>(".tabs [role=tab]")) {
