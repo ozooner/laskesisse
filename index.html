@@ -35,6 +35,11 @@
 
       <section class="intro" id="intro" role="tabpanel" aria-live="polite">
         <p class="count" id="count"></p>
+        <details class="about" id="about" open>
+          <summary>Hoiame eesti traditsioonid elus</summary>
+          <p>Viimastel aastatel on Halloween mardi- ja kadripäeva tasapisi üle võtnud. Selle lehe eesmärk on teha lastega marti ja katri jooksmas käimine lihtsamaks: kaardilt näed, millised pered sante ootavad ja millal nad kodus on.</p>
+          <p id="history"></p>
+        </details>
         <p class="desc" id="desc"></p>
         <p class="tally" id="tally"></p>
         <button type="button" id="fab" class="fab">+ Ootan sante</button>
@@ -95,7 +100,7 @@
           <textarea id="note" rows="3" maxlength="280" placeholder="Näiteks: sinine värav, uks on maja taga."></textarea>
         </div>
 
-        <div id="turnstile"></div>
+        <div id="turnstile-box"></div>
         <p class="form-error" id="form-error" role="alert"></p>
 
         <div class="sheet-actions">

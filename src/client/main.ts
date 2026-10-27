@@ -22,6 +22,13 @@ declare global {
   }
 }
 
+const HISTORY: Record<EventKey, string> = {
+  mardi:
+    "Mardipäev on üks vanemaid eesti rahvakalendri tähtpäevi. See tähistas põllutööde lõppu ja talvise aja algust. Mardisandid riietusid tumedalt ja kulunult, sageli maskide ja habemetega, ning soovisid perele vilja- ja karjaõnne.",
+  kadri:
+    "Kadripäev on Katariina päev ja seotud eelkõige karjaõnnega. Kadrisandid riietusid valgesse, sageli naisterõivastesse, ning soovisid perele lamba- ja lehmaõnne ning head talve.",
+};
+
 const DESCRIPTIONS: Record<EventKey, string> = {
   mardi:
     "Mardipäeval käivad mardisandid perest perre. Nad laulavad, tantsivad ja soovivad perele head ning saavad vastu ande. Kui ootad sante, pane oma maja kaardile.",
@@ -65,6 +72,7 @@ function setEvent(event: EventKey) {
     days === 0 ? `Täna on ${name.toLowerCase()}!`
     : days === 1 ? `Homme on ${name.toLowerCase()}!`
     : `<b>${days}</b>päeva ${untilWord}`;
+  $("history").textContent = HISTORY[event];
   $("desc").textContent = DESCRIPTIONS[event];
   $("fab").textContent = state.mine[event] ? "Minu maja" : "+ Ootan sante";
 
@@ -328,9 +336,8 @@ function setupTurnstile() {
     return;
   }
   const render = () => {
-    turnstileWidget = window.turnstile!.render($("turnstile"), {
+    turnstileWidget = window.turnstile!.render($("turnstile-box"), {
       sitekey: siteKey,
-      language: "et",
       theme: state.event === "mardi" ? "dark" : "light",
       "error-callback": (code) => {
         // Codes are listed at developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/
@@ -400,8 +407,13 @@ async function openSheet() {
   if (!state.mapsReady) {
     $("form-error").textContent = "Kaart ei laadinud, seega ei saa praegu aadressi lisada. Proovi lehte värskendada.";
   }
-  // Turnstile first, so a failing address search cannot keep the robot check from appearing.
-  setupTurnstile();
+  // Each setup is isolated, so one failing cannot keep the other from appearing.
+  try {
+    setupTurnstile();
+  } catch (err) {
+    console.error("Turnstile failed to load", err);
+    $("form-error").textContent = "Robotikontrolli ei õnnestunud laadida. Värskenda lehte.";
+  }
   try {
     await setupAutocomplete();
   } catch (err) {
@@ -534,6 +546,8 @@ async function claimEditLink(): Promise<EventKey | null> {
 }
 
 async function start() {
+  // On phones the background text starts collapsed so the map keeps most of the screen.
+  if (window.matchMedia("(max-width: 899px)").matches) $<HTMLDetailsElement>("about").open = false;
   console.log(`laskesisse build ${__BUILD_TIME__}${__BUILD_COMMIT__ ? ` (${__BUILD_COMMIT__})` : ""}`);
   buildRuleToggles();
 

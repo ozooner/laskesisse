@@ -50,7 +50,7 @@ button { cursor: pointer; }
 [hidden] { display: none !important; }
 
 /* ---------- Panel: header, tabs, intro ---------- */
-.panel { padding-top: env(safe-area-inset-top, 0px); }
+.panel { padding-top: env(safe-area-inset-top, 0px); max-height: 65dvh; overflow-y: auto; }
 .top {
   padding: 14px max(16px, env(safe-area-inset-right, 0px)) 4px max(16px, env(safe-area-inset-left, 0px));
 }
@@ -99,6 +99,10 @@ button { cursor: pointer; }
 .count { margin: 0; font: 700 1.15rem var(--f-display); }
 .count b { font-size: 2.1rem; color: var(--accent); margin-right: 6px; font-variant-numeric: tabular-nums; }
 .desc { margin: 0; color: var(--dim); font-size: 0.95rem; max-width: 60ch; }
+.about { color: var(--dim); font-size: 0.95rem; max-width: 60ch; }
+.about p { margin: 6px 0 0; }
+.about summary { cursor: pointer; color: var(--fg); font: 700 1rem var(--f-display); letter-spacing: 0.01em; }
+.about[open] summary { margin-bottom: 2px; }
 .tally { margin: 0; font-size: 0.9rem; font-weight: 500; }
 
 /* ---------- Map ---------- */
@@ -292,7 +296,7 @@ button { cursor: pointer; }
 /* ---------- Desktop: panel left, map right ---------- */
 @media (min-width: 900px) {
   body { grid-template-rows: none; grid-template-columns: 380px 1fr; }
-  .panel { border-right: 1px solid var(--line); overflow-y: auto; }
+  .panel { border-right: 1px solid var(--line); overflow-y: auto; max-height: none; }
   .top { padding-top: 24px; }
   .intro { padding-top: 18px; gap: 10px; }
   .house-card { bottom: 24px; }
