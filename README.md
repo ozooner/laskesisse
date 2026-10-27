@@ -1,6 +1,6 @@
 # Mardi & Kadri
 
-A map of households expecting *mardisandid* (10 November) and *kadrisandid* (25 November), to keep the Estonian tradition alive alongside Halloween. Households list their house with a time window and house rules; listings are deleted automatically once the day has passed.
+Runs at **https://laskesisse.ee**. A map of households expecting *mardisandid* (10 November) and *kadrisandid* (25 November), to keep the Estonian tradition alive alongside Halloween. Households list their house with a time window and house rules; listings are deleted automatically once the day has passed.
 
 - **Frontend:** Vite + TypeScript, Google Maps JavaScript API (Advanced Markers, Places Autocomplete, marker clustering). UI is Estonian only.
 - **Backend:** one Cloudflare Worker that serves the built frontend as static assets and a JSON API under `/api/*`, with data in Cloudflare D1.
@@ -35,7 +35,7 @@ A map of households expecting *mardisandid* (10 November) and *kadrisandid* (25 
 1. In [Google Cloud Console](https://console.cloud.google.com/), create a project and attach a billing account (required even within the free monthly usage).
 2. Enable **Maps JavaScript API** and **Places API (New)**.
 3. Create an API key under *APIs & Services → Credentials* and restrict it:
-   - Application restriction **Websites**: `https://martjakadri.<your-subdomain>.workers.dev/*`, your own domain later, and `http://localhost:5173/*` for development.
+   - Application restriction **Websites**: `https://laskesisse.ee/*`, `https://martjakadri.<your-subdomain>.workers.dev/*` (preview builds) and `http://localhost:5173/*` for development.
    - API restriction: Maps JavaScript API and Places API (New) only.
 4. Optional: under *Google Maps Platform → Map management*, create two **JavaScript / Vector** Map IDs (one dark style for Mardi, one light for Kadri). Without them the app uses Google's `DEMO_MAP_ID`.
 5. Recommended: set a budget alert on the billing account.
@@ -69,15 +69,18 @@ If the deploy step fails on the migration with an authentication error, give the
 
 ### 4. Turnstile (optional, recommended before launch)
 
-1. Dashboard → **Turnstile → Add widget**, add your hostname(s).
+1. Dashboard → **Turnstile → Add widget**, add the hostnames `laskesisse.ee` and `localhost`.
 2. Put the **site key** into `TURNSTILE_SITE_KEY` in `wrangler.jsonc`.
 3. Store the **secret key** as a Worker secret: `npx wrangler secret put TURNSTILE_SECRET_KEY` (or *Worker → Settings → Variables and Secrets*).
 
 Without the secret, the server skips the check (handy locally).
 
-### 5. Domain (later)
+### 5. Domain: laskesisse.ee
 
-Add a custom domain under *Worker → Settings → Domains & Routes* and add it to the Google API key's website restrictions.
+1. In the Cloudflare dashboard, **Add a domain** → `laskesisse.ee` (Free plan is fine). Cloudflare shows two nameservers.
+2. At your .ee registrar, replace the domain's nameservers with those two. Propagation usually takes minutes to a few hours.
+3. Nothing else to click: `routes` in `wrangler.jsonc` attaches `laskesisse.ee` to the Worker on the next deploy, including DNS record and TLS certificate.
+4. Optional `www.laskesisse.ee`: add a proxied DNS record `www` (CNAME to `laskesisse.ee`) and a **Redirect Rule** (*Rules → Redirect Rules*, template "Redirect from WWW to root") so there is one canonical address.
 
 ## Local development
 

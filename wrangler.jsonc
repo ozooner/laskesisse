@@ -5,6 +5,10 @@
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
 
+  // Requires the laskesisse.ee zone to be on Cloudflare (nameservers pointed to Cloudflare).
+  // Wrangler creates the DNS record and certificate on deploy.
+  "routes": [{ "pattern": "laskesisse.ee", "custom_domain": true }],
+
   // The Vite build outputs the frontend; the Worker only handles /api/*.
   "assets": {
     "not_found_handling": "single-page-application",
