@@ -3,7 +3,7 @@ import { ADDRESS_MAX, NOTE_MAX, RULES, type House, type RuleKey } from "../share
 
 interface Env {
   DB: D1Database;
-  GOOGLE_MAPS_API_KEY: string;
+  GOOGLE_MAPS_API_KEY?: string;
   MAP_ID_MARDI: string;
   MAP_ID_KADRI: string;
   TURNSTILE_SITE_KEY: string;
@@ -61,7 +61,7 @@ async function route(request: Request, env: Env, url: URL): Promise<Response> {
 
   if (parts[0] === "config" && parts.length === 1 && method === "GET") {
     return json({
-      mapsApiKey: env.GOOGLE_MAPS_API_KEY,
+      mapsApiKey: env.GOOGLE_MAPS_API_KEY ?? "",
       mapIds: { mardi: env.MAP_ID_MARDI, kadri: env.MAP_ID_KADRI },
       turnstileSiteKey: env.TURNSTILE_SITE_KEY,
     });

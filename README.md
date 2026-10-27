@@ -39,7 +39,8 @@ Runs at **https://laskesisse.ee**. A map of households expecting *mardisandid* (
    - API restriction: Maps JavaScript API and Places API (New) only.
 4. Optional: under *Google Maps Platform → Map management*, create two **JavaScript / Vector** Map IDs (one dark style for Mardi, one light for Kadri). Without them the app uses Google's `DEMO_MAP_ID`.
 5. Recommended: set a budget alert on the billing account.
-6. Put the key (and Map IDs) into `vars` in `wrangler.jsonc`. This key is meant to be public; the website restriction is what protects it.
+6. In the Cloudflare dashboard, *Worker → Settings → Variables and Secrets → Add*, type **Secret**, name `GOOGLE_MAPS_API_KEY`, value = the key. It takes effect immediately, no redeploy needed. (The browser still receives the key, as Google intends; the secret only keeps it out of the repo. The website restriction is what protects it.)
+7. Put the Map IDs into `MAP_ID_MARDI` / `MAP_ID_KADRI` in `vars` in `wrangler.jsonc`.
 
 ### 2. Cloudflare D1 database
 
