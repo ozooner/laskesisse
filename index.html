@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="et" data-event="mardi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mardi &amp; Kadri</title>
+    <meta name="description" content="Kaart peredest, kes ootavad mardi- ja kadrisante." />
+    <meta name="theme-color" content="#2a201a" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&display=swap" />
+    <link rel="stylesheet" href="/src/client/styles.css" />
+  </head>
+  <body>
+    <aside class="panel">
+      <header class="top">
+        <span class="logo">Mardi &amp; Kadri</span>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Püha">
+        <button type="button" role="tab" id="tab-mardi" data-event="mardi" aria-controls="intro">
+          Mardipäev<small>10.11</small>
+        </button>
+        <button type="button" role="tab" id="tab-kadri" data-event="kadri" aria-controls="intro">
+          Kadripäev<small>25.11</small>
+        </button>
+      </nav>
+
+      <section class="intro" id="intro" role="tabpanel" aria-live="polite">
+        <p class="count" id="count"></p>
+        <p class="desc" id="desc"></p>
+        <p class="tally" id="tally"></p>
+      </section>
+    </aside>
+
+    <main class="map-wrap">
+      <div id="map" class="map" aria-label="Kaart peredest, kes ootavad sante"></div>
+      <p id="map-status" class="map-status" hidden></p>
+      <button type="button" id="locate" class="locate" aria-label="Näita minu asukohta">◎</button>
+
+      <article id="house-card" class="house-card" hidden>
+        <button type="button" class="icon-btn close" data-close-card aria-label="Sulge">×</button>
+        <h3 id="card-address"></h3>
+        <p class="card-time" id="card-time"></p>
+        <ul class="chips" id="card-rules"></ul>
+        <p class="card-note" id="card-note"></p>
+        <div class="card-actions">
+          <a id="card-directions" target="_blank" rel="noopener">Juhatus Google Mapsis</a>
+          <button type="button" class="link-btn" id="card-report">Teata probleemist</button>
+        </div>
+      </article>
+    </main>
+
+    <button type="button" id="fab" class="fab">+ Ootan sante</button>
+
+    <div id="backdrop" class="backdrop" hidden></div>
+    <section id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+      <form id="house-form" class="sheet-body" novalidate>
+        <div class="sheet-head">
+          <h2 id="sheet-title">Ootan sante</h2>
+          <button type="button" class="icon-btn" data-close-sheet aria-label="Sulge">×</button>
+        </div>
+
+        <p class="notice" id="delete-notice"></p>
+
+        <div class="field">
+          <label for="address-autocomplete">Aadress</label>
+          <div id="address-slot"></div>
+          <p class="picked" id="picked-address" hidden></p>
+          <div id="pick-map" class="pick-map" hidden></div>
+          <p class="hint" id="pick-hint" hidden>Lohista märk täpselt oma ukse juurde.</p>
+        </div>
+
+        <fieldset class="field">
+          <legend>Ootame külalisi</legend>
+          <div class="times">
+            <label>alates <input type="time" id="time-from" value="17:00" required /></label>
+            <label>kuni <input type="time" id="time-to" value="20:00" required /></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Majareeglid</legend>
+          <div class="toggles" id="rules"></div>
+        </fieldset>
+
+        <div class="field">
+          <label for="note">Märkus <span class="hint" id="note-count"></span></label>
+          <textarea id="note" rows="3" maxlength="280" placeholder="Näiteks: sinine värav, uks on maja taga."></textarea>
+        </div>
+
+        <div id="turnstile"></div>
+        <p class="form-error" id="form-error" role="alert"></p>
+
+        <div class="sheet-actions">
+          <button type="submit" class="primary" id="submit">Pane kaardile</button>
+          <button type="button" class="link-btn danger" id="delete" hidden>Eemalda kaardilt</button>
+        </div>
+        <div class="confirm" id="delete-confirm" hidden>
+          <p>Kas eemaldame sinu maja kaardilt?</p>
+          <button type="button" class="danger-btn" id="delete-yes">Jah, eemalda</button>
+          <button type="button" class="link-btn" id="delete-no">Ei</button>
+        </div>
+      </form>
+
+      <div id="sheet-done" class="sheet-body" hidden>
+        <div class="sheet-head">
+          <h2>Sinu maja on kaardil!</h2>
+          <button type="button" class="icon-btn" data-close-sheet aria-label="Sulge">×</button>
+        </div>
+        <p id="done-text"></p>
+        <div class="field">
+          <label for="edit-link">Sinu privaatne muutmislink</label>
+          <div class="copy-row">
+            <input type="text" id="edit-link" readonly />
+            <button type="button" id="copy-link">Kopeeri</button>
+          </div>
+          <p class="hint">Sellelt lingilt saad maja andmeid muuta või selle kaardilt eemaldada. Hoia see alles ja ära jaga seda.</p>
+        </div>
+        <button type="button" class="primary" data-close-sheet>Valmis</button>
+      </div>
+    </section>
+
+    <script type="module" src="/src/client/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "martjakadri",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+
+  // The Vite build outputs the frontend; the Worker only handles /api/*.
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Create with `npx wrangler d1 create martjakadri` and paste the id here.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "martjakadri",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // 22:15 UTC = 00:15 Tallinn time in November (EET): purge listings of the day that just ended.
+  "triggers": { "crons": ["15 22 * * *"] },
+
+  // Public values only. The Maps key must be restricted to your domains in Google Cloud.
+  // TURNSTILE_SECRET_KEY is a secret: `npx wrangler secret put TURNSTILE_SECRET_KEY`.
+  "vars": {
+    "GOOGLE_MAPS_API_KEY": "",
+    "MAP_ID_MARDI": "",
+    "MAP_ID_KADRI": "",
+    "TURNSTILE_SITE_KEY": ""
+  }
+}

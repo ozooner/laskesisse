@@ -1,0 +1,36 @@
+{
+  "name": "martjakadri",
+  "version": "1.0.0",
+  "description": "Kaart peredest, kes ootavad mardi- ja kadrisante",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.worker.json",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "deploy": "wrangler d1 migrations apply DB --remote && wrangler deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ozooner/martjakadri.git"
+  },
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ozooner/martjakadri/issues"
+  },
+  "homepage": "https://github.com/ozooner/martjakadri#readme",
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.65.0",
+    "@cloudflare/workers-types": "^5.20261027.1",
+    "@types/google.maps": "^3.66.7",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "wrangler": "^4.153.0"
+  },
+  "dependencies": {
+    "@googlemaps/markerclusterer": "^2.6.2"
+  },
+  "private": true,
+  "type": "module"
+}
