@@ -32,5 +32,8 @@
     "@googlemaps/markerclusterer": "^2.6.2"
   },
   "private": true,
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  }
 }

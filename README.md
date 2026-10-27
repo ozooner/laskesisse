@@ -88,6 +88,8 @@ Access sits in front of the Worker, so nobody reaches the site or `/api` without
 
 ## Local development
 
+Node 24 (pinned to 24.22.1 in `.node-version`, which Workers Builds and nvm/fnm pick up).
+
 ```sh
 npm install
 cp .dev.vars.example .dev.vars   # put GOOGLE_MAPS_API_KEY here for local use
