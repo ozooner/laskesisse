@@ -43,7 +43,7 @@ Set in *Worker → Settings → Variables and Secrets*. Locally, put them in `.d
 
 ## Behaviour
 
-- The default tab is the next upcoming event in Europe/Tallinn time (Mardipäev until 10 Nov, then Kadripäev until 25 Nov, then next year's Mardipäev). `#mardi` / `#kadri` in the URL selects a tab.
+- The default tab is the next upcoming event in Europe/Tallinn time (Mardipäev until 10 Nov, then Kadripäev until 25 Nov, then next year's Mardipäev). `#mardipaev` / `#kadripaev` in the URL selects a tab (the older `#mardi` / `#kadri` still work).
 - Each tab has its own palette: dark wool and straw for Mardi, white linen and red for Kadri. Each can have its own Google Map ID (style).
 - "Ootan sante" opens a form that first tells the user their address is deleted automatically when the day has passed. Address comes from Places Autocomplete; the pin can be dragged to the exact door.
 - No accounts. Creating a listing returns a private edit link (`/?muuda=<id>.<token>`), which is also remembered in the browser. Only a SHA-256 hash of the token is stored.

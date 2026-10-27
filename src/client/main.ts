@@ -36,6 +36,15 @@ const DESCRIPTIONS: Record<EventKey, string> = {
     "Kadripäeval käivad valgetes riietes kadrisandid. Nad laulavad, soovivad karjaõnne ja head talve ning saavad vastu ande. Kui ootad sante, pane oma maja kaardile.",
 };
 
+// URL hash for each tab. The short #mardi / #kadri from earlier links still work.
+const HASHES: Record<EventKey, string> = { mardi: "mardipaev", kadri: "kadripaev" };
+
+function eventFromHash(): EventKey | null {
+  const hash = location.hash.slice(1);
+  const key = (Object.keys(HASHES) as EventKey[]).find((k) => HASHES[k] === hash);
+  return key ?? (isEventKey(hash) ? hash : null);
+}
+
 const THEME_COLORS: Record<EventKey, string> = { mardi: "#2a201a", kadri: "#f3f4f1" };
 const ESTONIA = { center: { lat: 58.65, lng: 25.0 }, zoom: 7 };
 const FALLBACK_MAP_ID = "DEMO_MAP_ID";
@@ -57,7 +66,7 @@ function setEvent(event: EventKey) {
   state.event = event;
   document.documentElement.dataset.event = event;
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", THEME_COLORS[event]);
-  if (location.hash !== `#${event}`) history.replaceState(null, "", `/#${event}`);
+  if (location.hash !== `#${HASHES[event]}`) history.replaceState(null, "", `/#${HASHES[event]}`);
 
   for (const tab of document.querySelectorAll<HTMLButtonElement>(".tabs [role=tab]")) {
     const selected = tab.dataset.event === event;
@@ -617,8 +626,8 @@ async function start() {
     });
   }
   window.addEventListener("hashchange", () => {
-    const hash = location.hash.slice(1);
-    if (isEventKey(hash) && hash !== state.event) setEvent(hash);
+    const event = eventFromHash();
+    if (event && event !== state.event) setEvent(event);
   });
 
   $("fab").addEventListener("click", openSheet);
@@ -639,8 +648,7 @@ async function start() {
   $("copy-link").addEventListener("click", copyEditLink);
 
   const claimed = await claimEditLink();
-  const hash = location.hash.slice(1);
-  setEvent(claimed ?? (isEventKey(hash) ? hash : defaultEvent(state.today)));
+  setEvent(claimed ?? eventFromHash() ?? defaultEvent(state.today));
 
   try {
     state.config = await api.config();
