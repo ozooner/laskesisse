@@ -158,6 +158,7 @@ async function showMap(event: EventKey) {
   }
   current.el.hidden = false;
   renderMarkers();
+  void showMyPosition();
 }
 
 async function renderMarkers() {
@@ -181,22 +182,67 @@ async function renderMarkers() {
   current.clusterer.addMarkers(markers);
 }
 
+const LOCATION_ERRORS: Record<number, string> = {
+  1: "Asukoha kasutamine on keelatud. Luba see brauseri seadetes (lukuikoon aadressiribal) ja proovi uuesti.",
+  2: "Asukohta ei õnnestunud määrata. Kontrolli, kas seadme asukohateenus on sisse lülitatud.",
+  3: "Asukoha leidmine võttis liiga kaua aega. Proovi uuesti.",
+};
+let myPosition: google.maps.LatLngLiteral | null = null;
+const myMarkers: Partial<Record<EventKey, google.maps.marker.AdvancedMarkerElement>> = {};
+
 function locateMe() {
-  const current = maps[state.event];
-  if (!current || !navigator.geolocation) return;
+  if (!navigator.geolocation) return showToast("Sinu brauser ei toeta asukoha leidmist.");
+  if (!maps[state.event]) return showToast("Kaart pole veel laadinud.");
+  const button = $<HTMLButtonElement>("locate");
+  button.classList.add("busy");
   navigator.geolocation.getCurrentPosition(
     ({ coords }) => {
-      current.map.panTo({ lat: coords.latitude, lng: coords.longitude });
-      current.map.setZoom(15);
+      button.classList.remove("busy");
+      myPosition = { lat: coords.latitude, lng: coords.longitude };
+      const current = maps[state.event];
+      if (!current) return;
+      current.map.panTo(myPosition);
+      current.map.setZoom(16);
+      void showMyPosition();
     },
-    () => mapStatusFlash("Asukohta ei õnnestunud leida."),
-    { enableHighAccuracy: false, timeout: 10_000 },
+    (err) => {
+      button.classList.remove("busy");
+      console.warn("Geolocation failed", err.code, err.message);
+      showToast(LOCATION_ERRORS[err.code] ?? "Asukohta ei õnnestunud leida.");
+    },
+    { enableHighAccuracy: true, timeout: 15_000, maximumAge: 60_000 },
   );
 }
 
-function mapStatusFlash(text: string) {
-  mapStatus(text);
-  setTimeout(() => mapStatus(null), 3000);
+/** Draws the "you are here" dot on the current tab's map. */
+async function showMyPosition() {
+  const current = maps[state.event];
+  if (!current || !myPosition) return;
+  const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as google.maps.MarkerLibrary;
+  let marker = myMarkers[state.event];
+  if (!marker) {
+    const content = document.createElement("div");
+    content.className = "me-dot";
+    marker = myMarkers[state.event] = new AdvancedMarkerElement({ content, title: "Sinu asukoht", zIndex: 2000 });
+  }
+  marker.position = myPosition;
+  marker.map = current.map;
+}
+
+let toastTimer: ReturnType<typeof setTimeout> | undefined;
+function showToast(text: string) {
+  const toast = $("toast");
+  toast.textContent = text;
+  toast.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (toast.hidden = true), 7000);
+}
+
+function toggleFullscreenMap() {
+  const on = document.body.classList.toggle("map-full");
+  const button = $("fullscreen");
+  button.setAttribute("aria-pressed", String(on));
+  button.setAttribute("aria-label", on ? "Välju täisekraanist" : "Näita kaarti täisekraanil");
 }
 
 /* ---------------- House card ---------------- */
@@ -567,6 +613,8 @@ async function start() {
 
   $("fab").addEventListener("click", openSheet);
   $("locate").addEventListener("click", locateMe);
+  $("fullscreen").addEventListener("click", toggleFullscreenMap);
+  $("toast").addEventListener("click", () => ($("toast").hidden = true));
   $("backdrop").addEventListener("click", closeSheet);
   document.querySelectorAll("[data-close-sheet]").forEach((b) => b.addEventListener("click", closeSheet));
   document.querySelector("[data-close-card]")!.addEventListener("click", hideCard);

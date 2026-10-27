@@ -49,6 +49,7 @@ Set in *Worker → Settings → Variables and Secrets*. Locally, put them in `.d
 - No accounts. Creating a listing returns a private edit link (`/?muuda=<id>.<token>`), which is also remembered in the browser. Only a SHA-256 hash of the token is stored.
 - A daily cron (00:15 Tallinn time in November) deletes listings whose date has passed. The API also only ever returns listings for the upcoming date.
 - Anyone can report a listing; it is hidden after 3 reports.
+- Map controls: "my location" (blue dot; failures explained in a toast, e.g. permission denied) and, on phones only, a fullscreen toggle that hides the panel but keeps "Ootan sante" visible.
 - Cloudflare Turnstile protects the form when configured.
 
 ## API
