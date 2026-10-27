@@ -97,4 +97,6 @@ npm run db:migrate:local
 npm run dev                      # http://localhost:5173, Worker + frontend together
 ```
 
+The browser console logs `laskesisse build <time> (<commit>)` on load, so you can tell which deploy is live.
+
 `npm run build` type-checks and builds; `npx wrangler deploy --dry-run` checks the deploy bundle without uploading.
