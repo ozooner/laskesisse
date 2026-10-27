@@ -591,10 +591,20 @@ async function claimEditLink(): Promise<EventKey | null> {
   }
 }
 
+/** Time since the build as "dd hh:mm:ss". */
+function buildAge(now = Date.now()): string {
+  const total = Math.max(0, Math.floor((now - Date.parse(__BUILD_TIME__)) / 1000));
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const days = Math.floor(total / 86_400);
+  const hours = Math.floor((total % 86_400) / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  return `${pad(days)} ${pad(hours)}:${pad(minutes)}:${pad(total % 60)}`;
+}
+
 async function start() {
   // On phones the background text starts collapsed so the map keeps most of the screen.
   if (window.matchMedia("(max-width: 899px)").matches) $<HTMLDetailsElement>("about").open = false;
-  console.log(`laskesisse build ${__BUILD_TIME__}${__BUILD_COMMIT__ ? ` (${__BUILD_COMMIT__})` : ""}`);
+  console.log(`laskesisse build ${__BUILD_TIME__} age ${buildAge()}${__BUILD_COMMIT__ ? ` (${__BUILD_COMMIT__})` : ""}`);
   buildRuleToggles();
 
   for (const tab of document.querySelectorAll<HTMLButtonElement>(".tabs [role=tab]")) {
