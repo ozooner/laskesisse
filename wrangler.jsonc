@@ -28,12 +28,8 @@
   // 22:15 UTC = 00:15 Tallinn time in November (EET): purge listings of the day that just ended.
   "triggers": { "crons": ["15 22 * * *"] },
 
-  // GOOGLE_MAPS_API_KEY and TURNSTILE_SECRET_KEY are secrets, set in the dashboard
-  // (Worker → Settings → Variables and Secrets) or with `npx wrangler secret put <NAME>`.
-  // Secrets survive deploys; anything listed here is overwritten on every deploy.
-  "vars": {
-    "MAP_ID_MARDI": "",
-    "MAP_ID_KADRI": "",
-    "TURNSTILE_SITE_KEY": ""
-  }
+  // Settings live in the dashboard (Worker → Settings → Variables and Secrets), not here:
+  // GOOGLE_MAPS_API_KEY, MAP_ID_MARDI, MAP_ID_KADRI, TURNSTILE_SITE_KEY (variables or secrets)
+  // and TURNSTILE_SECRET_KEY (secret). keep_vars stops deploys from wiping dashboard variables.
+  "keep_vars": true
 }

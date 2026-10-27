@@ -37,10 +37,9 @@ Runs at **https://laskesisse.ee**. A map of households expecting *mardisandid* (
 3. Create an API key under *APIs & Services → Credentials* and restrict it:
    - Application restriction **Websites**: `https://laskesisse.ee/*`, `https://martjakadri.<your-subdomain>.workers.dev/*` (preview builds) and `http://localhost:5173/*` for development.
    - API restriction: Maps JavaScript API and Places API (New) only.
-4. Optional: under *Google Maps Platform → Map management*, create two **JavaScript / Vector** Map IDs (one dark style for Mardi, one light for Kadri). Without them the app uses Google's `DEMO_MAP_ID`.
+4. Under *Google Maps Platform → Map management → Create Map ID*: type **JavaScript**, **Vector**. One Map ID is enough: the app asks for the dark variant on the Mardi tab and the light one on Kadri. Without it the app uses Google's testing-only `DEMO_MAP_ID`. A custom style can be attached to the Map ID later (*Map styles*) without code changes.
 5. Recommended: set a budget alert on the billing account.
-6. In the Cloudflare dashboard, *Worker → Settings → Variables and Secrets → Add*, type **Secret**, name `GOOGLE_MAPS_API_KEY`, value = the key. It takes effect immediately, no redeploy needed. (The browser still receives the key, as Google intends; the secret only keeps it out of the repo. The website restriction is what protects it.)
-7. Put the Map IDs into `MAP_ID_MARDI` / `MAP_ID_KADRI` in `vars` in `wrangler.jsonc`.
+6. In the Cloudflare dashboard, *Worker → Settings → Variables and Secrets*, add `GOOGLE_MAPS_API_KEY` (the key) and `MAP_ID_MARDI` / `MAP_ID_KADRI` (both the same Map ID, unless you make two styles). `keep_vars` in `wrangler.jsonc` keeps them across deploys. The browser receives the key and Map ID, as Google intends; the website restriction is what protects the key.
 
 ### 2. Cloudflare D1 database
 
@@ -67,8 +66,8 @@ Migrations run right after the new code goes live, so write them to be compatibl
 ### 4. Turnstile (optional, recommended before launch)
 
 1. Dashboard → **Turnstile → Add widget**, add the hostnames `laskesisse.ee` and `localhost`.
-2. Put the **site key** into `TURNSTILE_SITE_KEY` in `wrangler.jsonc`.
-3. Store the **secret key** as a Worker secret: `npx wrangler secret put TURNSTILE_SECRET_KEY` (or *Worker → Settings → Variables and Secrets*).
+2. Add the **site key** as variable `TURNSTILE_SITE_KEY` in the dashboard (*Variables and Secrets*). Include your `*.workers.dev` hostname in the widget while testing there.
+3. Add the **secret key** as type **Secret**, name `TURNSTILE_SECRET_KEY`.
 
 Without the secret, the server skips the check (handy locally).
 

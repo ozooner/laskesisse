@@ -1,3 +1,7 @@
 # Copy to .dev.vars for local development (not committed).
+# In production these are set in the Cloudflare dashboard.
 GOOGLE_MAPS_API_KEY=
+MAP_ID_MARDI=
+MAP_ID_KADRI=
+TURNSTILE_SITE_KEY=
 TURNSTILE_SECRET_KEY=
