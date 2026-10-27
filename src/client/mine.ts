@@ -9,7 +9,7 @@ export interface Mine {
 
 type MineByEvent = Partial<Record<EventKey, Mine>>;
 
-const KEY = "martjakadri:mine";
+const KEY = "laskesisse:mine";
 
 export function loadMine(): MineByEvent {
   try {

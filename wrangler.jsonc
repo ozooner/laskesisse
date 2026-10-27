@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "martjakadri",
+  "name": "laskesisse",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
@@ -15,12 +15,12 @@
     "run_worker_first": ["/api/*"]
   },
 
-  // No database_id: the first `wrangler deploy` creates the "martjakadri" D1 database,
+  // No database_id: the first `wrangler deploy` creates the "laskesisse" D1 database,
   // and later commands find it by name.
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "martjakadri",
+      "database_name": "laskesisse",
       "migrations_dir": "migrations"
     }
   ],

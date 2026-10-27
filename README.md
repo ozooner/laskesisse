@@ -35,7 +35,7 @@ Runs at **https://laskesisse.ee**. A map of households expecting *mardisandid* (
 1. In [Google Cloud Console](https://console.cloud.google.com/), create a project and attach a billing account (required even within the free monthly usage).
 2. Enable **Maps JavaScript API** and **Places API (New)**.
 3. Create an API key under *APIs & Services → Credentials* and restrict it:
-   - Application restriction **Websites**: `https://laskesisse.ee/*`, `https://martjakadri.<your-subdomain>.workers.dev/*` (preview builds) and `http://localhost:5173/*` for development.
+   - Application restriction **Websites**: `https://laskesisse.ee/*`, `https://laskesisse.<your-subdomain>.workers.dev/*` (preview builds) and `http://localhost:5173/*` for development.
    - API restriction: Maps JavaScript API and Places API (New) only.
 4. Under *Google Maps Platform → Map management → Create Map ID*: type **JavaScript**, **Vector**. One Map ID is enough: the app asks for the dark variant on the Mardi tab and the light one on Kadri. Without it the app uses Google's testing-only `DEMO_MAP_ID`. A custom style can be attached to the Map ID later (*Map styles*) without code changes.
 5. Recommended: set a budget alert on the billing account.
@@ -43,7 +43,7 @@ Runs at **https://laskesisse.ee**. A map of households expecting *mardisandid* (
 
 ### 2. Cloudflare D1 database
 
-Nothing to do. `wrangler.jsonc` names the database `martjakadri` without an id, so the first deploy creates it and the deploy command then applies `migrations/`. It shows up under *Storage & Databases → D1*.
+Nothing to do. `wrangler.jsonc` names the database `laskesisse` without an id, so the first deploy creates it and the deploy command then applies `migrations/`. It shows up under *Storage & Databases → D1*.
 
 ### 3. Workers Builds (the deploy pipeline)
 
@@ -51,7 +51,7 @@ In the Cloudflare dashboard: **Workers & Pages → Create → Import a repositor
 
 | Setting | Value |
 | --- | --- |
-| Project name | `martjakadri` (must match `name` in `wrangler.jsonc`) |
+| Project name | `laskesisse` (must match `name` in `wrangler.jsonc`) |
 | Production branch | `main` |
 | Build command | `npm run build` |
 | Deploy command | `npm run deploy` (`wrangler deploy`, then D1 migrations) |

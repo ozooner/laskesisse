@@ -3,7 +3,7 @@ let loading: Promise<void> | undefined;
 
 export function loadGoogleMaps(apiKey: string): Promise<void> {
   loading ??= new Promise((resolve, reject) => {
-    const callback = "__martjakadriMapsReady";
+    const callback = "__laskesisseMapsReady";
     (window as unknown as Record<string, () => void>)[callback] = () => resolve();
     const params = new URLSearchParams({
       key: apiKey,
