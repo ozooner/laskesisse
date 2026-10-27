@@ -367,7 +367,7 @@ async function openSheet() {
   $("sheet-title").textContent = mine ? "Minu maja" : "Ootan sante";
   $("delete-notice").textContent =
     `Pane tähele: sinu lisatud aadress kustutatakse automaatselt, kui ${name.toLowerCase()} on möödas (${formatShort(date)}).`;
-  $("submit").textContent = mine ? "Salvesta muudatused" : "Pane kaardile";
+  $("submit").textContent = mine ? "Salvesta muudatused" : "Lisa kaardile";
   $("delete").hidden = !mine;
   $("delete-confirm").hidden = true;
   $("form-error").textContent = "";

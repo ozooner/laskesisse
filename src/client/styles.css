@@ -183,9 +183,10 @@ button { cursor: pointer; }
 .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .chips li { font-size: 0.8rem; padding: 2px 9px; border-radius: 99px; border: 1px solid var(--line); }
 
-/* ---------- Floating action ---------- */
+/* ---------- Main action: floating on phones, in the side panel on desktop ---------- */
 .fab {
   position: fixed;
+  z-index: 5;
   right: max(16px, env(safe-area-inset-right, 0px));
   bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   background: var(--red);
@@ -295,6 +296,7 @@ button { cursor: pointer; }
   .top { padding-top: 24px; }
   .intro { padding-top: 18px; gap: 10px; }
   .house-card { bottom: 24px; }
+  .fab { position: static; justify-self: start; margin-top: 8px; padding: 14px 26px; font-size: 1.05rem; }
   .sheet {
     left: auto;
     top: 0;
