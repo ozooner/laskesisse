@@ -47,7 +47,7 @@ Nothing to do. `wrangler.jsonc` names the database `martjakadri` without an id, 
 
 ### 3. Workers Builds (the deploy pipeline)
 
-In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**, connect GitHub and pick `ozooner/martjakadri`.
+In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**, connect GitHub and pick `ozooner/laskesisse`.
 
 | Setting | Value |
 | --- | --- |

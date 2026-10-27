@@ -13,13 +13,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ozooner/martjakadri.git"
+    "url": "git+https://github.com/ozooner/laskesisse.git"
   },
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/ozooner/martjakadri/issues"
+    "url": "https://github.com/ozooner/laskesisse/issues"
   },
-  "homepage": "https://github.com/ozooner/martjakadri#readme",
+  "homepage": "https://github.com/ozooner/laskesisse#readme",
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.65.0",
     "@cloudflare/workers-types": "^5.20261027.1",
