@@ -5,9 +5,9 @@
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
 
-  // Requires the laskesisse.ee zone to be on Cloudflare (nameservers pointed to Cloudflare).
-  // Wrangler creates the DNS record and certificate on deploy.
-  "routes": [{ "pattern": "laskesisse.ee", "custom_domain": true }],
+  // Enable once the laskesisse.ee zone is on Cloudflare (nameservers pointed to Cloudflare);
+  // a deploy fails while the zone is missing. Wrangler then creates the DNS record and certificate.
+  // "routes": [{ "pattern": "laskesisse.ee", "custom_domain": true }],
 
   // The Vite build outputs the frontend; the Worker only handles /api/*.
   "assets": {
@@ -15,12 +15,12 @@
     "run_worker_first": ["/api/*"]
   },
 
-  // Create with `npx wrangler d1 create martjakadri` and paste the id here.
+  // No database_id: the first `wrangler deploy` creates the "martjakadri" D1 database,
+  // and later commands find it by name.
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "martjakadri",
-      "database_id": "00000000-0000-0000-0000-000000000000",
       "migrations_dir": "migrations"
     }
   ],

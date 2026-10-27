@@ -43,13 +43,7 @@ Runs at **https://laskesisse.ee**. A map of households expecting *mardisandid* (
 
 ### 2. Cloudflare D1 database
 
-```sh
-npm install
-npx wrangler login
-npx wrangler d1 create martjakadri
-```
-
-Copy the printed `database_id` into `wrangler.jsonc` and commit it.
+Nothing to do. `wrangler.jsonc` names the database `martjakadri` without an id, so the first deploy creates it and the deploy command then applies `migrations/`. It shows up under *Storage & Databases → D1*.
 
 ### 3. Workers Builds (the deploy pipeline)
 
@@ -60,12 +54,14 @@ In the Cloudflare dashboard: **Workers & Pages → Create → Import a repositor
 | Project name | `martjakadri` (must match `name` in `wrangler.jsonc`) |
 | Production branch | `main` |
 | Build command | `npm run build` |
-| Deploy command | `npm run deploy` (runs D1 migrations, then `wrangler deploy`) |
+| Deploy command | `npm run deploy` (`wrangler deploy`, then D1 migrations) |
 | Non-production branch deploy command | `npx wrangler versions upload` (default; gives preview URLs) |
 
 Note that preview versions use the same D1 database as production.
 
-If the deploy step fails on the migration with an authentication error, give the build's API token the **D1 Edit** permission (*Settings → Builds → API token*).
+If the deploy step fails creating or migrating the database with an authentication error, give the build's API token the **D1 Edit** permission (*Settings → Builds → API token*).
+
+Migrations run right after the new code goes live, so write them to be compatible with the previous version of the code (add columns, don't rename).
 
 ### 4. Turnstile (optional, recommended before launch)
 
@@ -79,8 +75,16 @@ Without the secret, the server skips the check (handy locally).
 
 1. In the Cloudflare dashboard, **Add a domain** → `laskesisse.ee` (Free plan is fine). Cloudflare shows two nameservers.
 2. At your .ee registrar, replace the domain's nameservers with those two. Propagation usually takes minutes to a few hours.
-3. Nothing else to click: `routes` in `wrangler.jsonc` attaches `laskesisse.ee` to the Worker on the next deploy, including DNS record and TLS certificate.
+3. Once the zone shows as **Active**, uncomment `routes` in `wrangler.jsonc`. The next deploy attaches `laskesisse.ee` to the Worker, including DNS record and TLS certificate.
 4. Optional `www.laskesisse.ee`: add a proxied DNS record `www` (CNAME to `laskesisse.ee`) and a **Redirect Rule** (*Rules → Redirect Rules*, template "Redirect from WWW to root") so there is one canonical address.
+
+### 6. Cloudflare Access (keep it private before launch)
+
+Access sits in front of the Worker, so nobody reaches the site or `/api` without logging in. No code changes are needed.
+
+- **workers.dev and preview URLs:** *Worker → Settings → Domains & Routes*, on the `workers.dev` and **Preview URLs** rows choose **Enable Cloudflare Access**. Then click **Manage Cloudflare Access** and set the policy to allow your e-mail addresses (one-time PIN login works without any identity provider).
+- **laskesisse.ee (once attached):** *Zero Trust → Access → Applications → Add an application → Self-hosted*, domain `laskesisse.ee`, policy **Allow** with *Emails* = your testers. Add `www.laskesisse.ee` too if you created it.
+- **Launch:** delete the Access application (or switch its policy to *Bypass → Everyone*) for `laskesisse.ee`. Keeping Access on the preview URLs is fine.
 
 ## Local development
 
