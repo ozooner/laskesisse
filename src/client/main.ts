@@ -10,7 +10,12 @@ import { type Mine, editLink, loadMine, readEditParam, saveMine } from "./mine";
 declare global {
   interface Window {
     turnstile?: {
-      render(el: HTMLElement, options: { sitekey: string; language?: string }): string;
+      render(el: HTMLElement, options: {
+        sitekey: string;
+        language?: string;
+        theme?: "light" | "dark" | "auto";
+        "error-callback"?: (code: string) => boolean | void;
+      }): string;
       reset(widgetId: string): void;
       getResponse(widgetId: string): string | undefined;
     };
@@ -323,13 +328,26 @@ function setupTurnstile() {
     return;
   }
   const render = () => {
-    turnstileWidget = window.turnstile!.render($("turnstile"), { sitekey: siteKey, language: "et" });
+    turnstileWidget = window.turnstile!.render($("turnstile"), {
+      sitekey: siteKey,
+      language: "et",
+      theme: state.event === "mardi" ? "dark" : "light",
+      "error-callback": (code) => {
+        // Codes are listed at developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/
+        $("form-error").textContent = `Robotikontroll ei õnnestunud (viga ${code}). Värskenda lehte ja proovi uuesti.`;
+        console.error("Turnstile error", code);
+        return true;
+      },
+    });
   };
   if (window.turnstile) return render();
   const script = document.createElement("script");
   script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
   script.async = true;
   script.onload = render;
+  script.onerror = () => {
+    $("form-error").textContent = "Robotikontrolli ei õnnestunud laadida. Värskenda lehte.";
+  };
   document.head.append(script);
 }
 
@@ -382,8 +400,15 @@ async function openSheet() {
   if (!state.mapsReady) {
     $("form-error").textContent = "Kaart ei laadinud, seega ei saa praegu aadressi lisada. Proovi lehte värskendada.";
   }
-  await setupAutocomplete();
+  // Turnstile first, so a failing address search cannot keep the robot check from appearing.
   setupTurnstile();
+  try {
+    await setupAutocomplete();
+  } catch (err) {
+    console.error("Address search failed to load", err);
+    autocompleteReady = false;
+    $("form-error").textContent = "Aadressiotsing ei laadinud. Värskenda lehte ja proovi uuesti.";
+  }
   (document.getElementById("address-autocomplete") ?? $("time-from")).focus();
 }
 
@@ -401,7 +426,11 @@ function readForm(): HouseInput | string {
   if (timeFrom >= timeTo) return "Lõpuaeg peab olema hilisem kui algusaeg.";
   const rules = [...form.querySelectorAll<HTMLInputElement>("input[name=rule]:checked")].map((b) => b.value as RuleKey);
   const turnstileToken = turnstileWidget !== null ? window.turnstile?.getResponse(turnstileWidget) : undefined;
-  if (state.config?.turnstileSiteKey && !turnstileToken) return "Palun kinnita, et sa pole robot.";
+  if (state.config?.turnstileSiteKey && !turnstileToken) {
+    return turnstileWidget === null
+      ? "Robotikontroll ei laadinud. Värskenda lehte."
+      : "Palun oota, kuni robotikontroll lõpeb, või vajuta selle kastikesele.";
+  }
   return {
     event: state.event,
     address: picked.address,
