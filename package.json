@@ -9,6 +9,8 @@
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.worker.json",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "sample:count": "wrangler d1 execute DB --remote --command \"SELECT event, COUNT(*) AS houses FROM houses WHERE id LIKE 'sample-%' GROUP BY event\"",
+    "sample:remove": "wrangler d1 execute DB --remote --command \"DELETE FROM houses WHERE id LIKE 'sample-%'\"",
     "deploy": "wrangler deploy && wrangler d1 migrations apply DB --remote"
   },
   "repository": {

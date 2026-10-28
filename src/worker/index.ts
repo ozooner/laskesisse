@@ -1,4 +1,4 @@
-import { eventDate, isEventKey, tallinnToday } from "../shared/events";
+import { addDays, eventDate, isEventKey, tallinnToday } from "../shared/events";
 import { ADDRESS_MAX, NOTE_MAX, RULES, type House, type RuleKey } from "../shared/houses";
 
 interface Env {
@@ -142,10 +142,17 @@ async function reportHouse(env: Env, id: string): Promise<Response> {
   return new Response(null, { status: 204 });
 }
 
-/** Deletes every listing whose evening has passed. Runs from the cron trigger. */
+/** Days before an event when the launch sample listings (ids "sample-…") disappear by themselves. */
+const SAMPLE_REMOVAL_DAYS = 2;
+
+/** Deletes every listing whose evening has passed, and sample listings close to their date. Runs from the cron trigger. */
 async function purgePast(env: Env): Promise<void> {
-  const result = await env.DB.prepare("DELETE FROM houses WHERE event_date < ?").bind(tallinnToday()).run();
-  console.log(`Purged ${result.meta.changes} past listings`);
+  const today = tallinnToday();
+  const [past, samples] = await env.DB.batch([
+    env.DB.prepare("DELETE FROM houses WHERE event_date < ?").bind(today),
+    env.DB.prepare("DELETE FROM houses WHERE id LIKE 'sample-%' AND event_date <= ?").bind(addDays(today, SAMPLE_REMOVAL_DAYS)),
+  ]);
+  console.log(`Purged ${past.meta.changes} past and ${samples.meta.changes} sample listings`);
 }
 
 function validate(body: Record<string, unknown>) {

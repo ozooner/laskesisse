@@ -49,6 +49,7 @@ Set in *Worker → Settings → Variables and Secrets*. Locally, put them in `.d
 - No accounts. Creating a listing returns a private edit link (`/?muuda=<id>.<token>`), which is also remembered in the browser. Only a SHA-256 hash of the token is stored.
 - A daily cron (00:15 Tallinn time in November) deletes listings whose date has passed. The API also only ever returns listings for the upcoming date.
 - Anyone can report a listing; it is hidden after 3 reports.
+- **Launch sample data:** migration `0002_sample_houses.sql` adds 20 Tallinn + 10 Tartu listings per day (ids `sample-…`, district-level addresses, no notes) so the map isn't empty at launch. Remove them with `npm run sample:remove` (needs `npx wrangler login`; `npm run sample:count` shows what's left). As a safety net the cron deletes them two days before their date. Don't edit `0002` (applied migrations never re-run); to remove them through a deploy instead, add a new migration with `DELETE FROM houses WHERE id LIKE 'sample-%';`.
 - Map controls: "my location" (blue dot; failures explained in a toast, e.g. permission denied) and, on phones only, a fullscreen toggle that hides the panel but keeps "Ootan sante" visible.
 - Cloudflare Turnstile protects the form when configured.
 
